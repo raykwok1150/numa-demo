@@ -11,7 +11,7 @@
 #define MPOL_F_STATIC_NODES     (1 << 15)
 #endif
 
-// #define STUDY_API
+#define STUDY_API
 
 static void print_nodes() {
     int max_node = numa_max_node();
@@ -73,14 +73,19 @@ int main(int argc, const char* argv[])
 
     print_nodes();
 
+    // maaloc 5GB on default node
+    void* mem1 = malloc(5UL << 30);
+    memset(mem1, 0x0, 5UL << 30);
+
     // malloc 10GB on node 1
     size_t size = 10UL << 30;
-    void *mem = alloc_memory_on_node(size, 1);
-    memset(mem, 0x0, size);
+    void* mem2 = alloc_memory_on_node(size, 1);
+    memset(mem2, 0x0, size);
 
     print_nodes();
 
-    free_memory(mem, size);
+    free(mem1);
+    free_memory(mem2, size);
 err:
     return 0;
 }
